@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/vasanthp45/Node.js-.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("node-app")
+                }
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                script {
+                    // Stop and remove any old container
+                    sh 'docker stop node-app || true && docker rm node-app || true'
+                    // Run new container
+                    sh 'docker run -d -p 3001:3000 --name node-app mynode'
+                }
+            }
+        }
+    }
+}
+i
